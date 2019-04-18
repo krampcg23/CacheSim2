@@ -1,5 +1,6 @@
 #include <map>
 #include <cassert>
+#include <iostream>
 #include <cmath>
 #include <cstdlib>
 #include "misc.h"

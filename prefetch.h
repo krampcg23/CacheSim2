@@ -22,4 +22,22 @@ public:
                               System* sys);
 };
 
+// Part 1: AdjPrefetch
+class AdjPrefetch : public Prefetch {
+public:
+    int prefetchMiss(uint64_t address, unsigned int tid,
+                              System* sys);
+    int prefetchHit(uint64_t address, unsigned int tid,
+                              System* sys);
+};
+
+// Part 2: SeqPrefetch
+class SeqPrefetch : public Prefetch {
+public:
+    int prefetchMiss(uint64_t address, unsigned int tid,
+                              System* sys);
+    int prefetchHit(uint64_t address, unsigned int tid,
+                              System* sys);
+};
+
 #endif

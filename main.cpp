@@ -15,7 +15,7 @@ int main()
    unsigned int arr_map[] = {0};
    vector<unsigned int> tid_map(arr_map, arr_map +
          sizeof(arr_map) / sizeof(unsigned int));
-   NullPrefetch prefetch;
+   SeqPrefetch prefetch;
    // The constructor parameters are:
    // the tid_map, the cache line size in bytes,
    // number of cache lines, the associativity,
