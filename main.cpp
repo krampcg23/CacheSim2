@@ -7,15 +7,30 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char* argv[])
 {
+   Prefetch* prefetch = nullptr;
+   if (argc == 2) {
+        cerr << "Wrong usage, expectes --prefetcher [BestEffortPrefetch | SeqPrefetch | AdjPrefetch]" << endl;
+        return -1;
+   }
+
+   if (argc > 1) {
+       if (string(argv[1]) != string("--prefetcher")) {
+           cerr << "Wrong usage, expectes --prefetcher [BestEffortPrefetch | SeqPrefetch | AdjPrefetch]" << endl;
+           return -1;
+       }
+       if (string(argv[2]) == string("SeqPrefetch")) prefetch = new SeqPrefetch();
+       else if (string(argv[2]) == string("AdjPrefetch")) prefetch = new AdjPrefetch();
+       else if (string(argv[2]) == string("BestEffortPrefetch")) prefetch = new BestEffortPrefetch();
+       else prefetch = new NullPrefetch();
+   }
    // tid_map is used to inform the simulator how
    // thread ids map to NUMA/cache domains. Using
    // the tid as an index gives the NUMA domain.
    unsigned int arr_map[] = {0};
    vector<unsigned int> tid_map(arr_map, arr_map +
          sizeof(arr_map) / sizeof(unsigned int));
-   SeqPrefetch prefetch;
    // The constructor parameters are:
    // the tid_map, the cache line size in bytes,
    // number of cache lines, the associativity,
@@ -24,7 +39,7 @@ int main()
    // whether to do virtual to physical translation,
    // and number of caches/domains
    // WARNING: counting compulsory misses doubles execution time
-   MultiCacheSystem sys(tid_map, 64, 1024, 64, &prefetch, true, false, 1);
+   MultiCacheSystem sys(tid_map, 64, 1024, 64, prefetch, true, false, 1);
    char rw;
    uint64_t address;
    unsigned long long lines = 0;

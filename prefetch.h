@@ -49,4 +49,14 @@ public:
                               System* sys);
 };
 
+// Part 3: BestEffortPrefetch
+class BestEffortPrefetch : public Prefetch {
+public:
+    int prefetchMiss(uint64_t address, unsigned int tid,
+                              System* sys);
+    int prefetchHit(uint64_t address, unsigned int tid,
+                              System* sys);
+};
+
+
 #endif
