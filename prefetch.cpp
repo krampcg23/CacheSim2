@@ -56,7 +56,7 @@ int SeqPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
    uint64_t mySet = address & sys->SET_MASK;
    uint64_t myTag = address & sys->TAG_MASK;
 
-   if (myTag == MRP_tag & mySet == MRP_set) {
+   if (myTag == MRP_tag && mySet == MRP_set) {
         uint64_t shifter = 1 << sys->SET_SHIFT;
         sys->memAccess(address + (shifter * n), 'R', tid, true);
         MRPrefetch += shifter;
