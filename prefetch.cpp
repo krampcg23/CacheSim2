@@ -65,14 +65,16 @@ int SeqPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
 
 int BestEffortPrefetch::prefetchMiss(uint64_t address, unsigned int tid, System* sys)
 {
-    for(int i = 1; i <= n; i++) {
+    for(int i = 1; i <= n_miss; i++) {
         sys->memAccess(address + (SHIFTER * i), 'R', tid, true);
     }
-    return n;
+    return n_miss;
 }
 
 int BestEffortPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
 {
-    prefetchMiss(address, tid, sys);
-    return n;
+    for(int i = 1; i <= n_hit; i++) {
+        sys->memAccess(address + (SHIFTER * i), 'R', tid, true);
+    }
+    return n_hit;
 }
