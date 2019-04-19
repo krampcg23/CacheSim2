@@ -30,28 +30,49 @@ int AdjPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
 
 int SeqPrefetch::prefetchMiss(uint64_t address, unsigned int tid, System* sys)
 {
+   // Prefetch sequentially only if the previous miss was the one right before
+   uint64_t mySet = address & sys->SET_MASK;
+   uint64_t myTag = address & sys->TAG_MASK;
+
+   if (myTag == MRM_tag && mySet == (MRM_set + SHIFTER)){
+       for(int i = 1; i <= n; i++) {
+          sys->memAccess(address + (SHIFTER * i), 'R', tid, true);
+       }
+       MRPrefetch = address + SHIFTER;
+       MRP_set = (address + SHIFTER) & sys->SET_MASK;
+       MRP_tag = (address + SHIFTER)  & sys->TAG_MASK;
+   }
+   MRM_set = address & sys->SET_MASK;
+   MRM_tag = address & sys->TAG_MASK;
+
+   return n;
+}
+
+int SeqPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
+{
+   // Prefetch the next Nth block only if the current address is the prefetched one
+   uint64_t mySet = address & sys->SET_MASK;
+   uint64_t myTag = address & sys->TAG_MASK;
+
+   if (myTag == MRP_tag && mySet == MRP_set) {
+        sys->memAccess(address + (SHIFTER * n), 'R', tid, true);
+        MRPrefetch += SHIFTER;
+        MRP_set = MRPrefetch & sys->SET_MASK;
+        MRP_tag = MRPrefetch & sys->TAG_MASK;
+   }
+   return 1;
+}
+
+int BestEffortPrefetch::prefetchMiss(uint64_t address, unsigned int tid, System* sys)
+{
     for(int i = 1; i <= n; i++) {
         sys->memAccess(address + (SHIFTER * i), 'R', tid, true);
     }
     return n;
 }
 
-int SeqPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
+int BestEffortPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
 {
     prefetchMiss(address, tid, sys);
     return n;
-}
-
-int BestEffortPrefetch::prefetchMiss(uint64_t address, unsigned int tid, System* sys)
-{
-   for (int i = 1; i <= 3; i++) {
-       sys->memAccess(address + (SHIFTER * i), 'R', tid, true);
-   }
-   return 3;
-}
-
-int BestEffortPrefetch::prefetchHit(uint64_t address, unsigned int tid, System* sys)
-{
-   sys->memAccess(address + SHIFTER, 'R', tid, true);
-   return 1;
 }

@@ -34,6 +34,14 @@ public:
 // Part 2: SeqPrefetch
 class SeqPrefetch : public Prefetch {
 public:
+    // MR = most recent
+    // MRP = most recent prefetch
+    // MRM = most recent miss
+    uint64_t MRPrefetch = 0;
+    uint64_t MRM_set = 0;
+    uint64_t MRM_tag = 0;
+    uint64_t MRP_set = 0;
+    uint64_t MRP_tag = 0;
     int n = 8;
     int prefetchMiss(uint64_t address, unsigned int tid,
                               System* sys);
@@ -44,6 +52,7 @@ public:
 // Part 3: BestEffortPrefetch
 class BestEffortPrefetch : public Prefetch {
 public:
+    int n = 8;
     int prefetchMiss(uint64_t address, unsigned int tid,
                               System* sys);
     int prefetchHit(uint64_t address, unsigned int tid,
