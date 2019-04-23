@@ -52,8 +52,8 @@ public:
 // Part 3: BestEffortPrefetch
 class BestEffortPrefetch : public Prefetch {
 public:
-    int n_hit = 5;
-    int n_miss = 5;
+    int n_hit = 6;
+    int n_miss = 6;
     int prefetchMiss(uint64_t address, unsigned int tid,
                               System* sys);
     int prefetchHit(uint64_t address, unsigned int tid,
